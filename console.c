@@ -188,9 +188,8 @@ struct {
 
 #define C(x)  ((x)-'@')  // Control-x
 int bol = 0;//beginning of line mode
-int end_of_bol_chars = 0;
+int asabit = 0;
 int count2;
-int asabit;
 void
 consoleintr(int (*getc)(void))
 {
@@ -202,8 +201,8 @@ consoleintr(int (*getc)(void))
     switch(c){
       case C('A'):
       bol=1; //beginning of line
-      end_of_bol_chars = 0;
-      asabit = input.e;
+      asabit += input.e;
+      input.e = 0;
       break;
 
       case C('P'):  // Process listing.
@@ -219,7 +218,7 @@ consoleintr(int (*getc)(void))
         break;
         case C('T'):  //Swap
         t = input.buf[input.e-1 % INPUT_BUF];
-        input.buf[input.e-1 % INPUT_BUF]  = input.buf[input.e-2 % INPUT_BUF];
+        input.buf[input.e-1 % INPUT_BUF] = input.buf[input.e-2 % INPUT_BUF];
         input.buf[input.e-2 % INPUT_BUF] = t;
         consputc(BACKSPACE);
         consputc(BACKSPACE);
@@ -249,17 +248,17 @@ consoleintr(int (*getc)(void))
             char to_save_for_bol[128];
             for(count = 0; count < asabit ; count++)
             {
-              to_save_for_bol[count] = input.buf[count+end_of_bol_chars];
+              to_save_for_bol[count] = input.buf[count+input.e];
               consputc(BACKSPACE);
             }
-            input.buf[end_of_bol_chars++ % INPUT_BUF] = c;
-            consputc(input.buf[end_of_bol_chars-1 % INPUT_BUF]);
+            input.buf[input.e++ % INPUT_BUF] = c;
+            consputc(input.buf[input.e-1 % INPUT_BUF]);
             for(count2 = 0 ; count2 < asabit ; count2++)
             {
-              input.buf[end_of_bol_chars+count2] = to_save_for_bol[count2];
-              consputc(input.buf[end_of_bol_chars+count2]);
+              input.buf[input.e+count2] = to_save_for_bol[count2];
+              consputc(input.buf[input.e+count2]);
             }
-            input.e=input.e+end_of_bol_chars+asabit;
+            // input.e=input.e+end_of_bol_chars+asabit;
           }
           if(c == '\n' || c == C('D') || input.e == input.r+INPUT_BUF)
           {
