@@ -201,7 +201,7 @@ consoleintr(int (*getc)(void))
     if(bol==1 && c=='\n') bol = 0;
     switch(c){
       case C('A'):
-      bol=1;
+      bol=1; //beginning of line
       end_of_bol_chars = 0;
       asabit = input.e;
       break;
