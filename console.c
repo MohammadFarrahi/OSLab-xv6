@@ -263,13 +263,9 @@ consoleintr(int (*getc)(void))
           }
           if(c == '\n' || c == C('D') || input.e == input.r+INPUT_BUF)
           {
-            if(bol) consputc('B');
-            else consputc('F');
             bol=0;
             input.w = input.e;
             wakeup(&input.r);
-            if(bol) consputc('B');
-            else consputc('F');
           }
         }
         break;
