@@ -191,6 +191,7 @@ struct {
 void
 consoleintr(int (*getc)(void))
 {
+  char t;
   int c, doprocdump = 0;
 
   acquire(&cons.lock);
@@ -205,6 +206,17 @@ consoleintr(int (*getc)(void))
             input.buf[(input.e-1) % INPUT_BUF] != '\n'){
         input.e--;
         consputc(BACKSPACE);
+      }
+      break;
+    case C('T'):  //Swap
+      if(input.e != input.w && input.e-1 != input.w){
+        t = input.buf[input.e-1 % INPUT_BUF];
+        input.buf[input.e-1 % INPUT_BUF]  = input.buf[input.e-2 % INPUT_BUF];
+        input.buf[input.e-2 % INPUT_BUF] = t;
+        consputc(BACKSPACE);
+        consputc(BACKSPACE);
+        consputc(input.buf[input.e-2 % INPUT_BUF]);
+        consputc(input.buf[input.e-1 % INPUT_BUF]);
       }
       break;
     case C('H'): case '\x7f':  // Backspace
