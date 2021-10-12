@@ -177,7 +177,7 @@ consputc(int c)
   uartputc(c);
   cgaputc(c);
 }
-int count;
+
 #define INPUT_BUF 128
 struct {
   char buf[INPUT_BUF];
@@ -187,36 +187,35 @@ struct {
 } input;
 
 #define C(x)  ((x)-'@')  // Control-x
-int bol = 0;//beginning of line mode
-int asabit = 0;
-int count2;
+int buf_size_before_ctrl_A = 0;
 void
 consoleintr(int (*getc)(void))
 {
   char t;
+  // int buf_size_before_ctrl_A = 0; // =======(Q)======== why not work when locally defiend??
+  int index;
   int c, doprocdump = 0;
+
   acquire(&cons.lock);
   while((c = getc()) >= 0){
-    if(bol==1 && c=='\n') bol = 0;
     switch(c){
       case C('A'):
-      bol=1; //beginning of line
-      asabit += input.e;
-      input.e = 0;
-      break;
+        buf_size_before_ctrl_A += input.e;
+        input.e = 0;
+        break;
 
       case C('P'):  // Process listing.
       // procdump() locks cons.lock indirectly; invoke later
-      doprocdump = 1;
-      break;
+        doprocdump = 1;
+        break;
       case C('U'):  // Kill line.
-      while(input.e != input.w &&
-        input.buf[(input.e-1) % INPUT_BUF] != '\n'){
+        while(input.e != input.w &&
+          input.buf[(input.e-1) % INPUT_BUF] != '\n'){
           input.e--;
           consputc(BACKSPACE);
         }
         break;
-        case C('T'):  //Swap
+      case C('T'):  //Swap
         t = input.buf[input.e-1 % INPUT_BUF];
         input.buf[input.e-1 % INPUT_BUF] = input.buf[input.e-2 % INPUT_BUF];
         input.buf[input.e-2 % INPUT_BUF] = t;
@@ -226,8 +225,7 @@ consoleintr(int (*getc)(void))
         consputc(input.buf[input.e-1 % INPUT_BUF]);
         break;
 
-
-        case C('H'): case '\x7f':  // Backspace
+      case C('H'): case '\x7f':  // Backspace
         if(input.e != input.w){
           input.e--;
           consputc(BACKSPACE);
@@ -235,46 +233,38 @@ consoleintr(int (*getc)(void))
         break;
 
 
-        default:
+      default:
         if(c != 0 && input.e-input.r < INPUT_BUF){
           c = (c == '\r') ? '\n' : c;
-          if(!bol)
+          
+          char buf_before_ctrl_A[INPUT_BUF];
+          for(index = 0; index < buf_size_before_ctrl_A ; index++)
           {
-            input.buf[input.e++ % INPUT_BUF] = c;
-            consputc(c);
+            buf_before_ctrl_A[index] = input.buf[index+input.e];
+            consputc(BACKSPACE);
           }
-          else if(bol)
+          input.buf[input.e++ % INPUT_BUF] = c;
+          consputc(c);
+          for(index = 0; index < buf_size_before_ctrl_A ; index++)
           {
-            char to_save_for_bol[128];
-            for(count = 0; count < asabit ; count++)
-            {
-              to_save_for_bol[count] = input.buf[count+input.e];
-              consputc(BACKSPACE);
-            }
-            input.buf[input.e++ % INPUT_BUF] = c;
-            consputc(input.buf[input.e-1 % INPUT_BUF]);
-            for(count2 = 0 ; count2 < asabit ; count2++)
-            {
-              input.buf[input.e+count2] = to_save_for_bol[count2];
-              consputc(input.buf[input.e+count2]);
-            }
-            // input.e=input.e+end_of_bol_chars+asabit;
+            input.buf[input.e+index] = buf_before_ctrl_A[index];
+            consputc(input.buf[input.e+index]);
           }
-          if(c == '\n' || c == C('D') || input.e == input.r+INPUT_BUF)
+          if(c == '\n' || c == C('D') || input.e+buf_size_before_ctrl_A == input.r+INPUT_BUF)
           {
-            bol=0;
-            input.w = input.e;
+            input.w = input.e+buf_size_before_ctrl_A;
+            buf_size_before_ctrl_A = 0;
             wakeup(&input.r);
           }
         }
         break;
-      }
-    }
-    release(&cons.lock);
-    if(doprocdump) {
-      procdump();  // now call procdump() wo. cons.lock held
     }
   }
+  release(&cons.lock);
+  if(doprocdump) {
+    procdump();  // now call procdump() wo. cons.lock held
+  }
+}
 
   int
   consoleread(struct inode *ip, char *dst, int n)
