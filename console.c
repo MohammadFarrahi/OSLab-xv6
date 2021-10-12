@@ -236,7 +236,7 @@ consoleintr(int (*getc)(void))
       default:
         if(c != 0 && input.e-input.r < INPUT_BUF){
           c = (c == '\r') ? '\n' : c;
-          
+
           char buf_before_ctrl_A[INPUT_BUF];
           for(index = 0; index < buf_size_before_ctrl_A ; index++)
           {
@@ -250,10 +250,11 @@ consoleintr(int (*getc)(void))
             input.buf[input.e+index] = buf_before_ctrl_A[index];
             consputc(input.buf[input.e+index]);
           }
-          if(c == '\n' || c == C('D') || input.e+buf_size_before_ctrl_A == input.r+INPUT_BUF)
+          if(c == '\n' || c == C('D') || (input.e+buf_size_before_ctrl_A) == input.r+INPUT_BUF)
           {
-            input.w = input.e+buf_size_before_ctrl_A;
+            input.e += buf_size_before_ctrl_A;
             buf_size_before_ctrl_A = 0;
+            input.w = input.e;
             wakeup(&input.r);
           }
         }
