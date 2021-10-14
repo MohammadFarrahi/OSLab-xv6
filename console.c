@@ -193,11 +193,26 @@ consoleintr(int (*getc)(void))
 {
   char t;
   int c, doprocdump = 0;
+  int uppercase_index;
   acquire(&cons.lock);
   while((c = getc()) >= 0){
     switch(c){
       case C('A'):
         cursor_pos_after_ctrl_A = last_new_line_index;
+        break;
+
+      case C('O'):
+        uppercase_index = cursor_pos_after_ctrl_A;
+
+        while(uppercase_index < input.e && input.buf[uppercase_index % INPUT_BUF] != ' '){
+          if('a' <= input.buf[uppercase_index  % INPUT_BUF] && input.buf[uppercase_index  % INPUT_BUF] <= 'z'){
+            input.buf[uppercase_index  % INPUT_BUF] -= 32; 
+          }
+          uppercase_index++;
+        }
+        uppercase_index = input.e;
+        while(--uppercase_index >= cursor_pos_after_ctrl_A){ consputc(BACKSPACE); }
+        while(++uppercase_index < input.e){ consputc(input.buf[uppercase_index % INPUT_BUF]); }
         break;
 
       case C('P'):  // Process listing.
@@ -208,6 +223,9 @@ consoleintr(int (*getc)(void))
         while(input.e != input.w &&
           input.buf[(input.e-1) % INPUT_BUF] != '\n'){
           input.e--;
+          if(cursor_pos_after_ctrl_A > input.e){
+            cursor_pos_after_ctrl_A = input.e;
+          }
           consputc(BACKSPACE);
         }
         break;
