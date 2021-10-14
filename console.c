@@ -255,8 +255,8 @@ consoleintr(int (*getc)(void))
             consputc(input.buf[input.e-1 % INPUT_BUF]);
             for(count2 = 0 ; count2 < asabit ; count2++)
             {
-              input.buf[input.e+count2] = to_save_for_bol[count2];
-              consputc(input.buf[input.e+count2]);
+              input.buf[input.e+count2 % INPUT_BUF] = to_save_for_bol[count2];
+              consputc(input.buf[input.e+count2 % INPUT_BUF]);
             }
             // input.e=input.e+end_of_bol_chars+asabit;
           }
