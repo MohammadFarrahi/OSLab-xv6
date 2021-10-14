@@ -187,7 +187,7 @@ struct {
 } input;
 
 #define C(x)  ((x)-'@')  // Control-x
-int index = 0, buf_size_before_ctrl_A = 0, cursor_pos_after_ctrl_A = 0;
+int index = 0, cursor_pos_after_ctrl_A = 0, last_new_line_index = 0;
 void
 consoleintr(int (*getc)(void))
 {
@@ -197,9 +197,7 @@ consoleintr(int (*getc)(void))
   while((c = getc()) >= 0){
     switch(c){
       case C('A'):
-        buf_size_before_ctrl_A = input.e;
-        cursor_pos_after_ctrl_A = 0;
-        // consputc('B');
+        cursor_pos_after_ctrl_A = last_new_line_index;
         break;
 
       case C('P'):  // Process listing.
@@ -226,7 +224,6 @@ consoleintr(int (*getc)(void))
       case C('H'): case '\x7f':  // Backspace
         if(input.e != input.w){
           input.e--;
-          if(buf_size_before_ctrl_A > 0){ buf_size_before_ctrl_A--; }
           if(cursor_pos_after_ctrl_A > input.e){
             cursor_pos_after_ctrl_A = input.e;
           }
@@ -240,9 +237,9 @@ consoleintr(int (*getc)(void))
           c = (c == '\r') ? '\n' : c;
 
           char buf_before_ctrl_A[INPUT_BUF];
-          for(index = 0; index < buf_size_before_ctrl_A ; index++)
+          for(index = 0; index < (input.e - cursor_pos_after_ctrl_A) ; index++)
           {
-            buf_before_ctrl_A[index] = input.buf[cursor_pos_after_ctrl_A+index];
+            buf_before_ctrl_A[index] = input.buf[(cursor_pos_after_ctrl_A+index) % INPUT_BUF];
             consputc(BACKSPACE);
           }
           if(c != '\n' && c!= C('D')){
@@ -250,10 +247,10 @@ consoleintr(int (*getc)(void))
             input.e++;
             consputc(c);
           }
-          for(index = 0; index < buf_size_before_ctrl_A ; index++)
+          for(index = 0; index < (input.e - cursor_pos_after_ctrl_A) ; index++)
           {
-            input.buf[cursor_pos_after_ctrl_A+index] = buf_before_ctrl_A[index];
-            consputc(input.buf[cursor_pos_after_ctrl_A+index]);
+            input.buf[(cursor_pos_after_ctrl_A+index) % INPUT_BUF] = buf_before_ctrl_A[index];
+            consputc(input.buf[(cursor_pos_after_ctrl_A+index) % INPUT_BUF]);
           }
           if(c == '\n' || c == C('D')){
             input.buf[input.e++ % INPUT_BUF] = c;
@@ -261,8 +258,7 @@ consoleintr(int (*getc)(void))
           }
           if(c == '\n' || c == C('D') || input.e == input.r+INPUT_BUF)
           {
-            buf_size_before_ctrl_A = 0;
-            cursor_pos_after_ctrl_A = 0;
+            cursor_pos_after_ctrl_A = last_new_line_index = input.e;
             input.w = input.e;
             wakeup(&input.r);
           }
