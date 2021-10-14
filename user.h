@@ -37,3 +37,6 @@ void* memset(void*, int, uint);
 void* malloc(uint);
 void free(void*);
 int atoi(const char*);
+void swap(char *x, char *y);
+char* reverse(char *buffer, int i, int j);
+char* itoa(int value, char* buffer, int base);
