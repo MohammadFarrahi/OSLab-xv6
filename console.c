@@ -187,21 +187,19 @@ struct {
 } input;
 
 #define C(x)  ((x)-'@')  // Control-x
-int buf_size_before_ctrl_A = 0;
+int index = 0, buf_size_before_ctrl_A = 0, cursor_pos_after_ctrl_A = 0;
 void
 consoleintr(int (*getc)(void))
 {
   char t;
-  // int buf_size_before_ctrl_A = 0; // =======(Q)======== why not work when locally defiend??
-  int index;
   int c, doprocdump = 0;
-
   acquire(&cons.lock);
   while((c = getc()) >= 0){
     switch(c){
       case C('A'):
-        buf_size_before_ctrl_A += input.e;
-        input.e = 0;
+        buf_size_before_ctrl_A = input.e;
+        cursor_pos_after_ctrl_A = 0;
+        // consputc('B');
         break;
 
       case C('P'):  // Process listing.
@@ -228,6 +226,10 @@ consoleintr(int (*getc)(void))
       case C('H'): case '\x7f':  // Backspace
         if(input.e != input.w){
           input.e--;
+          if(buf_size_before_ctrl_A > 0){ buf_size_before_ctrl_A--; }
+          if(cursor_pos_after_ctrl_A > input.e){
+            cursor_pos_after_ctrl_A = input.e;
+          }
           consputc(BACKSPACE);
         }
         break;
@@ -240,20 +242,27 @@ consoleintr(int (*getc)(void))
           char buf_before_ctrl_A[INPUT_BUF];
           for(index = 0; index < buf_size_before_ctrl_A ; index++)
           {
-            buf_before_ctrl_A[index] = input.buf[index+input.e];
+            buf_before_ctrl_A[index] = input.buf[cursor_pos_after_ctrl_A+index];
             consputc(BACKSPACE);
           }
-          input.buf[input.e++ % INPUT_BUF] = c;
-          consputc(c);
+          if(c != '\n' && c!= C('D')){
+            input.buf[cursor_pos_after_ctrl_A++ % INPUT_BUF] = c;
+            input.e++;
+            consputc(c);
+          }
           for(index = 0; index < buf_size_before_ctrl_A ; index++)
           {
-            input.buf[input.e+index] = buf_before_ctrl_A[index];
-            consputc(input.buf[input.e+index]);
+            input.buf[cursor_pos_after_ctrl_A+index] = buf_before_ctrl_A[index];
+            consputc(input.buf[cursor_pos_after_ctrl_A+index]);
           }
-          if(c == '\n' || c == C('D') || (input.e+buf_size_before_ctrl_A) == input.r+INPUT_BUF)
+          if(c == '\n' || c == C('D')){
+            input.buf[input.e++ % INPUT_BUF] = c;
+            consputc(c);
+          }
+          if(c == '\n' || c == C('D') || input.e == input.r+INPUT_BUF)
           {
-            input.e += buf_size_before_ctrl_A;
             buf_size_before_ctrl_A = 0;
+            cursor_pos_after_ctrl_A = 0;
             input.w = input.e;
             wakeup(&input.r);
           }
