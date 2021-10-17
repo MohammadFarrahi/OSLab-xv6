@@ -230,13 +230,15 @@ consoleintr(int (*getc)(void))
         }
         break;
       case C('T'):  //Swap
-        t = input.buf[input.e-1 % INPUT_BUF];
-        input.buf[input.e-1 % INPUT_BUF] = input.buf[input.e-2 % INPUT_BUF];
-        input.buf[input.e-2 % INPUT_BUF] = t;
-        consputc(BACKSPACE);
-        consputc(BACKSPACE);
-        consputc(input.buf[input.e-2 % INPUT_BUF]);
-        consputc(input.buf[input.e-1 % INPUT_BUF]);
+        if(input.e != input.w && input.e-1 != input.w){
+          t = input.buf[input.e-1 % INPUT_BUF];
+          input.buf[input.e-1 % INPUT_BUF] = input.buf[input.e-2 % INPUT_BUF];
+          input.buf[input.e-2 % INPUT_BUF] = t;
+          consputc(BACKSPACE);
+          consputc(BACKSPACE);
+          consputc(input.buf[input.e-2 % INPUT_BUF]);
+          consputc(input.buf[input.e-1 % INPUT_BUF]);
+        }
         break;
 
       case C('H'): case '\x7f':  // Backspace
