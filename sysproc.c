@@ -89,3 +89,18 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+
+int
+sys_calculate_sum_of_digits(void)
+{
+  int number = myproc()->tf->edx;
+  int sum = 0;
+  while(number != 0) {
+    sum += number%10;
+    number /= 10;
+  }
+
+  cprintf("sum of digits : %d\n",  sum);
+  return 0;
+}

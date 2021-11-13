@@ -23,6 +23,7 @@ int getpid(void);
 char* sbrk(int);
 int sleep(int);
 int uptime(void);
+int calculate_sum_of_digits(void);
 
 // ulib.c
 int stat(const char*, struct stat*);
