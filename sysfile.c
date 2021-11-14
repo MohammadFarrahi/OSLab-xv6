@@ -79,6 +79,26 @@ sys_read(void)
 }
 
 int
+sys_get_file_sectors(void)
+{
+  struct file *f;
+  int n, r;
+  uint *p;
+
+  if(argfd(0, 0, &f) < 0 || argint(2, &n) < 0 || argptr(1, (char**)(&p), n) < 0)
+    return -1;
+  if(f->readable == 0 || f->type == FD_PIPE)
+    return -1;
+  if(f->type == FD_INODE){
+    ilock(f->ip);
+    r = read_sectors(f->ip, p, f->off, n);
+    iunlock(f->ip);
+    return r;
+  }
+  panic("get_file_sectors");
+}
+
+int
 sys_write(void)
 {
   struct file *f;

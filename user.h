@@ -24,6 +24,7 @@ char* sbrk(int);
 int sleep(int);
 int uptime(void);
 int calculate_sum_of_digits(void);
+int get_file_sectors(int, void*, int);
 
 // ulib.c
 int stat(const char*, struct stat*);
