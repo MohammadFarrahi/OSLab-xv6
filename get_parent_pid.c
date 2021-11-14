@@ -6,6 +6,6 @@
 
 int main(int argc, char *argv[])
 {
-    printf(2, "parent pid : %d\n", get_parent_pid());
+    printf(1, "parent pid : %d\n", get_parent_pid());
     exit();
 }
