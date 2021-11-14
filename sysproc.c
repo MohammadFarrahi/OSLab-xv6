@@ -110,3 +110,14 @@ sys_get_parent_pid(void)
 {
   return myproc()->parent->pid;
 }
+
+int
+sys_set_process_parent(void)
+{
+  int pid;
+
+  /* get syscall argument */
+  if (argint(0, &pid) < 0)
+    return -1;
+  return set_process_parent(pid);
+}

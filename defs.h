@@ -122,6 +122,7 @@ int             wait(void);
 void            wakeup(void*);
 void            yield(void);
 int            	calculate_sum_of_digits(void);
+int             set_process_parent(int);
 // swtch.S
 void            swtch(struct context**, struct context*);
 

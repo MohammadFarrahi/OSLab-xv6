@@ -532,3 +532,21 @@ procdump(void)
     cprintf("\n");
   }
 }
+
+int
+set_process_parent(int pid)
+{
+  int status = -1;
+  struct proc *p;
+  struct proc *curr_proc = myproc();
+
+  acquire(&ptable.lock);
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+    if(p->pid == pid){
+      p->debug_parent = curr_proc;
+      status = 1;
+      break;
+    }
+  release(&ptable.lock);
+  return status;
+}
