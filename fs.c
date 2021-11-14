@@ -399,6 +399,32 @@ bmap(struct inode *ip, uint bn)
   panic("bmap: out of range");
 }
 
+static uint
+bmap_ver2(struct inode *ip, uint bn)
+{
+  uint addr, *a;
+  struct buf *bp;
+
+  if(bn < NDIRECT){
+    if((addr = ip->addrs[bn]) == 0)
+      return 0;
+    return addr;
+  }
+  bn -= NDIRECT;
+
+  if(bn < NINDIRECT){
+    if((addr = ip->addrs[NDIRECT]) == 0)
+      return 0;
+    bp = bread(ip->dev, addr);
+    a = (uint*)bp->data;
+    if((addr = a[bn]) == 0)
+      return 0;
+    brelse(bp);
+    return addr;
+  }
+  panic("bmap: out of range");
+}
+
 // Truncate inode (discard contents).
 // Only called when the inode has no links
 // to it (no directory entries referring to it)
@@ -473,6 +499,26 @@ readi(struct inode *ip, char *dst, uint off, uint n)
     brelse(bp);
   }
   return n;
+}
+
+int
+read_sectors(struct inode* ip, uint* dst, uint off)
+{
+  uint ind, num_of_sectors, sector;
+
+  if(ip->type == T_DEV)
+    return -1;
+  if(off > ip->size)
+    return -1;
+  num_of_sectors = (uint)((ip->size - off)/BSIZE) + min(1, (ip->size - off)%BSIZE);
+
+  for(ind = 0; ind < num_of_sectors; ind++){
+    sector = bmap_ver2(ip, (uint)(off/BSIZE) + ind);
+    if(sector == 0)
+      break;
+    dst[ind] = sector;
+  }
+  return (int)ind;
 }
 
 // PAGEBREAK!

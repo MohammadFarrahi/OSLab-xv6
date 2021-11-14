@@ -104,3 +104,9 @@ sys_calculate_sum_of_digits(void)
   cprintf("sum of digits : %d\n",  sum);
   return 0;
 }
+
+int
+sys_get_parent_pid(void)
+{
+  return myproc()->parent->pid;
+}
