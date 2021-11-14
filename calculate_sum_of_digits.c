@@ -6,7 +6,7 @@
 int main(int argc, char *argv[])
 {
    if(argc != 2){
-      printf(2, "Usage: calculate_sum_of_digits of number\n");
+      printf(2, "Usage: \"calculate_sum_of_digits $number$\"\n");
       exit();
    }
    int number = atoi(argv[1]);
