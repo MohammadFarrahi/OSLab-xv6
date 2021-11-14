@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
       close(fd);
       fd = open(file_names[i], O_RDONLY);
     
-      sector_count = get_file_sectors(fd, sectors, 128+12);
+      sector_count = get_file_sectors(fd, sectors);
       printf(2, "sector addresses of file with name = %s: \n", file_names[i]);
       for(ind = 0; ind < sector_count; ind++){
          printf(2, "%x   ", sectors[ind]);

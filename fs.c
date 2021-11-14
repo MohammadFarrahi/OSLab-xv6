@@ -502,7 +502,7 @@ readi(struct inode *ip, char *dst, uint off, uint n)
 }
 
 int
-read_sectors(struct inode* ip, uint* dst, uint off, int dst_arr_size)
+read_sectors(struct inode* ip, uint* dst, uint off)
 {
   uint ind, num_of_sectors, sector;
 
@@ -512,7 +512,7 @@ read_sectors(struct inode* ip, uint* dst, uint off, int dst_arr_size)
     return -1;
   num_of_sectors = (uint)((ip->size - off)/BSIZE) + min(1, (ip->size - off)%BSIZE);
 
-  for(ind = 0; ind < num_of_sectors && ind < dst_arr_size; ind++){
+  for(ind = 0; ind < num_of_sectors; ind++){
     sector = bmap_ver2(ip, (uint)(off/BSIZE) + ind);
     if(sector == 0)
       break;

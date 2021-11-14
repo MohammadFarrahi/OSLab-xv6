@@ -82,16 +82,16 @@ int
 sys_get_file_sectors(void)
 {
   struct file *f;
-  int n, r;
+  int r;
   uint *p;
 
-  if(argfd(0, 0, &f) < 0 || argint(2, &n) < 0 || argptr(1, (char**)(&p), n) < 0)
+  if(argfd(0, 0, &f) < 0 || argptr(1, (char**)(&p), NDIRECT+NINDIRECT) < 0)
     return -1;
   if(f->readable == 0 || f->type == FD_PIPE)
     return -1;
   if(f->type == FD_INODE){
     ilock(f->ip);
-    r = read_sectors(f->ip, p, f->off, n);
+    r = read_sectors(f->ip, p, f->off);
     iunlock(f->ip);
     return r;
   }
