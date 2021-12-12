@@ -101,3 +101,10 @@ sys_set_proc_queue(void)
 
   return set_proc_queue(pid, queue);
 }
+
+int
+sys_print_procs(void)
+{
+  print_procs();
+  return 1;
+}

@@ -21,4 +21,4 @@
 #define SYS_mkdir  20
 #define SYS_close  21
 #define SYS_set_proc_queue 	22
-#define SYS_print_processes 23
+#define SYS_print_procs 23

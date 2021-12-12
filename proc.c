@@ -683,3 +683,138 @@ set_proc_queue(int pid, int dest_queue)
   release(&ptable.lock);
   return -1;
 }
+
+char*
+get_state_string(int state)
+{
+  switch(state) {
+    case 0:
+      return "UNUSED";
+    case 1:
+      return "EMBRYO";
+    case 2:
+      return "SLEEPING";
+    case 3:
+      return "RUNNABLE";
+    case 4:
+      return "RUNNING";
+    case 5:
+      return "ZOMBIE";
+    default:
+      return "";
+  }
+  return "";
+}
+
+char*
+get_queue_string(int q)
+{
+  if (q == 1)
+    return "RR";
+  else if (q == 2)
+    return "LCFS";
+  else if (q == 3)
+    return "MHRRN";
+  return "";
+}
+
+int
+get_int_len(int n)
+{
+  int len = 0;
+  if (n == 0)
+    return 1;
+  while (n > 0) {
+    n /= 10;
+    len++;
+  }
+  return len;
+}
+
+
+void 
+print_procs(void)
+{
+  struct proc *p;
+
+  cprintf("name");
+  for (int i = 0 ; i < 10 - 4 ; i++)
+    cprintf(" ");
+  
+  cprintf("pid");
+  for (int i = 0 ; i < 5 - 3 ; i++)
+    cprintf(" ");
+
+  cprintf("state");
+  for (int i = 0 ; i < 10 - 5 ; i++)
+    cprintf(" ");
+
+  cprintf("queue");
+  for (int i = 0 ; i < 10 - 5 ; i++)
+    cprintf(" ");
+
+  cprintf("priority");
+  for (int i = 0; i < 10 - 8 ; i++)
+    cprintf(" ");
+
+  cprintf("arrival");
+  for (int i = 0 ; i < 10 - 7 ; i++)
+    cprintf(" ");
+
+  cprintf("cycle");
+  for (int i = 0 ; i < 8 - 5 ; i++)
+    cprintf(" ");
+  
+  cprintf("HRRN");
+  for (int i = 0 ; i < 8 - 4 ; i++)
+    cprintf(" ");
+
+  cprintf("\n");
+  for (int i = 0 ; i < 86 ; i++)
+    cprintf(".");
+  cprintf("\n");
+
+
+
+  acquire(&ptable.lock);
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){ 
+    if (p->state == UNUSED)
+      continue;
+
+
+    cprintf(p->name);
+    for (int i = 0 ; i < 10 - strlen(p->name) ; i++)
+      cprintf(" ");
+
+    cprintf("%d", p->pid);
+    for (int i = 0 ; i < 5 - get_int_len(p->pid) ; i++)
+      cprintf(" ");
+
+    cprintf(get_state_string(p->state));
+    for (int i = 0 ; i < 10 - strlen(get_state_string(p->state)) ; i++)
+      cprintf(" "); 
+
+    cprintf(get_queue_string(p->queue_num));
+    for (int i = 0 ; i < 10 - strlen(get_queue_string(p->queue_num)); i++)
+      cprintf(" ");
+
+    cprintf("%d", p->mhrrn_priority);
+    for (int i = 0; i < 10 - get_int_len(p->mhrrn_priority); i++)
+      cprintf(" ");
+
+    cprintf("%d", p->arrival_time);
+    for (int i = 0; i < 10 - get_int_len(p->arrival_time); i++)
+      cprintf(" ");
+
+    cprintf("%d", p->cycles);
+    for (int i = 0; i < 8 - get_int_len(p->cycles); i++)
+      cprintf(" ");
+    int p_mhrrn = (int)calculate_mhrrn(p->arrival_time, p->cycles, p->mhrrn_priority);
+    cprintf("%d", p_mhrrn);
+    for (int i = 0; i < 8 - get_int_len(p_mhrrn); i++)
+      cprintf(" ");
+
+    cprintf("\n");
+  }
+  release(&ptable.lock);
+}

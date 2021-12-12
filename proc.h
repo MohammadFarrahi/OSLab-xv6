@@ -51,7 +51,7 @@ struct proc {
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
 
-  int mhrrn_priority;      //assigned externally
+  int mhrrn_priority;         //assigned externally
   int queue_num;              // Process Queue Number :     1 = RR     2 = LCFS     3 = MAX_MHRRN
   int cycles;                 // Process Cycles
   int arrival_time;           // Process Arraval time
