@@ -89,6 +89,13 @@ found:
   p->state = EMBRYO;
   p->pid = nextpid++;
 
+  p->queue_num = LCFS;
+  p->cycles = 1;
+  p->waiting_time = 0;
+  acquire(&tickslock);
+  p->arrival_time = ticks;
+  release(&tickslock);
+
   release(&ptable.lock);
 
   // Allocate kernel stack.
