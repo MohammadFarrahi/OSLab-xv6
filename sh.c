@@ -184,6 +184,7 @@ fork1(void)
   int pid;
 
   pid = fork();
+  if(pid > 0) { set_proc_queue(pid, 1); } //seting child queue of shell to RR
   if(pid == -1)
     panic("fork");
   return pid;
