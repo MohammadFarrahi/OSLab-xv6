@@ -183,6 +183,10 @@ UPROGS=\
 	_wc\
 	_zombie\
 	_pprocs\
+	_set_proc_queue\
+	_set_priority_os\
+	_set_priority_pc\
+
 
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)
@@ -251,8 +255,8 @@ qemu-nox-gdb: fs.img xv6.img .gdbinit
 
 EXTRA=\
 	mkfs.c ulib.c user.h cat.c echo.c forktest.c grep.c kill.c\
-	ln.c ls.c factor.c mkdir.c rm.c stressfs.c usertests.c wc.c zombie.c\
-	printf.c pprocs.c umalloc.c\
+	set_queue.c ln.c ls.c factor.c mkdir.c rm.c stressfs.c usertests.c wc.c zombie.c\
+	set_priority_pc.c set_priority_os.c printf.c pprocs.c umalloc.c\
 	README dot-bochsrc *.pl toc.* runoff runoff1 runoff.list\
 	.gdbinit.tmpl gdbutil\
 
