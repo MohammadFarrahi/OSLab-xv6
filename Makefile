@@ -187,6 +187,7 @@ UPROGS=\
 	_set_proc_queue\
 	_set_priority_os\
 	_set_priority_pc\
+	_tp\
 
 
 fs.img: mkfs README $(UPROGS)
@@ -255,7 +256,7 @@ qemu-nox-gdb: fs.img xv6.img .gdbinit
 # check in that version.
 
 EXTRA=\
-	mkfs.c ulib.c user.h cat.c echo.c forktest.c grep.c kill.c\
+	tp.c mkfs.c ulib.c user.h cat.c echo.c forktest.c grep.c kill.c\
 	ln.c ls.c factor.c mkdir.c rm.c stressfs.c usertests.c wc.c zombie.c\
 	foo.c printf.c pprocs.c umalloc.c\
 	set_queue.c ln.c ls.c factor.c mkdir.c rm.c stressfs.c usertests.c wc.c zombie.c\

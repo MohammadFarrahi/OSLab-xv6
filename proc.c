@@ -766,8 +766,8 @@ print_procs(void)
   for (int i = 0 ; i < 8 - 5 ; i++)
     cprintf(" ");
   
-  cprintf("HRRN");
-  for (int i = 0 ; i < 8 - 4 ; i++)
+  cprintf("MHRRN");
+  for (int i = 0 ; i < 8 - 5 ; i++)
     cprintf(" ");
 
   cprintf("\n");

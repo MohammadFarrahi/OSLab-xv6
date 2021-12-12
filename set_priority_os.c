@@ -9,6 +9,7 @@ int main(int argc, char* argv[])
     if(argc < 2)
     {
         printf(2, "priority arg not provided.\n");
+        exit();
         return -1;
     } 
     priority = atoi(argv[1]);

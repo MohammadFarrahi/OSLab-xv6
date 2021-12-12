@@ -3,7 +3,7 @@
 #include "user.h"
 #include "fcntl.h"
 
-#define NPRCS 12
+#define NPRCS 15
 
 int main(int argc, char const *argv[])
 {

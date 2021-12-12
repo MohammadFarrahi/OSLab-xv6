@@ -9,6 +9,7 @@ int main(int argc, char* argv[])
     if(argc < 3)
     {
         printf(2, "pid and priority not provided.\n");
+        exit();
         return -1;
     } 
     pid = atoi(argv[1]);
