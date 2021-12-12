@@ -132,8 +132,8 @@ static int (*syscalls[])(void) = {
 [SYS_close]   sys_close,
 [SYS_set_proc_queue]  sys_set_proc_queue,
 [SYS_print_procs] sys_print_procs,
-[SYS_set_mhrrn_priority_os] set_mhrrn_priority_os,
-[SYS_set_mhrrn_priority_pc] set_mhrrn_priority_pc
+[SYS_set_mhrrn_priority_os] sys_set_mhrrn_priority_os,
+[SYS_set_mhrrn_priority_pc] sys_set_mhrrn_priority_pc
 };
 
 void

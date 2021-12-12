@@ -4,7 +4,6 @@
 #include "stat.h"
 #include "user.h"
 #include "fcntl.h"
-#include "defs.h"
 
 char *argv[] = { "sh", 0 };
 
@@ -34,7 +33,7 @@ main(void)
       exit();
     }
     if(pid > 0){
-      set_proc_queue(pid, RR);
+      set_proc_queue(pid, 1); //setting shell process to RR
     }
     while((wpid=wait()) >= 0 && wpid != pid)
       printf(1, "zombie!\n");
