@@ -320,6 +320,55 @@ wait(void)
 //  - eventually that process transfers control
 //      via swtch back to the scheduler.
 
+	struct proc* get_proc_from_rr_queue(void)
+{
+  struct proc *p;
+  struct proc *testee;
+  int proc_exists = 0;
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+  {
+    if(p->state != RUNNABLE || p->queue_num != RR)
+        continue;
+    if(proc_exists)  //for first proc in rr queue
+    {
+        if(p->arrival_time < testee->arrival_time)
+          testee = p;
+    }
+    else         //for others in rr queue
+    {
+        testee = p;
+        proc_exists = 1;
+    }
+  }
+	  if(proc_exists) //if any proccess in rr exists
+      return testee;
+  return 0;
+}
+
+struct proc* get_proc_from_lcfs_queue(void)
+{
+  struct proc *curr_proc;
+  struct proc *lc_proc;
+  int has_proc = 0;
+  for(curr_proc = ptable.proc; curr_proc < &ptable.proc[NPROC]; curr_proc++){
+    if(curr_proc->state != RUNNABLE || curr_proc->queue_num != LCFS)
+        continue;
+    if(has_proc) {
+      if(curr_proc->arrival_time > lc_proc->arrival_time)
+        lc_proc = curr_proc;
+    }
+    else {
+      lc_proc = curr_proc;
+      has_proc = 1;
+    }
+  }
+
+  if(has_proc)
+    return lc_proc;
+
+  return 0;
+}
+
 
 double calculate_mhrrn(int arrival_time, int executed_cycles_number, int hrrn_priority)
 {
@@ -338,7 +387,7 @@ struct proc* get_proc_from_mhrrn_queue(void)
 
   for(current_proc = ptable.proc; current_proc < &ptable.proc[NPROC]; ++current_proc)
   {
-    if(current_proc->state != RUNNABLE || current_proc->queue_num != HRRN)
+    if(current_proc->state != RUNNABLE || current_proc->queue_num != MHRRN)
       continue;
 
     double current_ratio = calculate_mhrrn(current_proc->arrival_time, current_proc->cycles, current_proc->mhrrn_priority);
