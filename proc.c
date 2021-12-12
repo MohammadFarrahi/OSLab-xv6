@@ -320,6 +320,37 @@ wait(void)
 //  - eventually that process transfers control
 //      via swtch back to the scheduler.
 
+void
+check_aging()
+{
+  struct proc *p;
+
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->state != RUNNABLE)
+      continue;
+
+    if (p->waiting_time > AGING_CYCLE)
+    {
+        p->queue_num = (p->queue_num == RR) ? RR : p->queue_num-1;
+        p->waiting_time = 0;
+    }
+  }
+}
+
+void
+update_waiting_times()
+{
+  struct proc *p;
+
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->state != RUNNABLE)
+      continue;
+
+    p->waiting_time++;
+  }
+}
+
+
 	struct proc* get_proc_from_rr_queue(void)
 {
   struct proc *p;
@@ -342,7 +373,7 @@ wait(void)
   }
 	  if(proc_exists) //if any proccess in rr exists
       return testee;
-  return 0;
+  return NULL;
 }
 
 struct proc* get_proc_from_lcfs_queue(void)
@@ -366,13 +397,15 @@ struct proc* get_proc_from_lcfs_queue(void)
   if(has_proc)
     return lc_proc;
 
-  return 0;
+  return NULL;
 }
 
 
 double calculate_mhrrn(int arrival_time, int executed_cycles_number, int hrrn_priority)
 {
+  // acquire(&tickslock);
   int current_time = ticks;
+  // release(&tickslock);
   int waiting_time = current_time - arrival_time;
   double hrrn = (waiting_time + executed_cycles_number)*1.0/executed_cycles_number;
   double mhrrn = (hrrn + hrrn_priority)/2;
@@ -400,9 +433,6 @@ struct proc* get_proc_from_mhrrn_queue(void)
   }
   return proc_with_most_mhrrn;
 }
-
-
-
 
 void
 scheduler(void)
@@ -432,17 +462,18 @@ scheduler(void)
         c->proc = p;
         switchuvm(p);
         p->state = RUNNING;
-        //p->cycles += 0.1;
-        //update_waiting_times();
-        //p->waiting_time = 0;
+        p->cycles += 1;
+        update_waiting_times();
+        p->waiting_time = 0;
         check_aging();
         swtch(&(c->scheduler), p->context);
         switchkvm();
 
         c->proc = NULL;
-        if (p->state == RUNNABLE && p->queue_num == ROUND_ROBIN)
-        {
-            p->arrival_time = ticks;
+        if (p->state == RUNNABLE && p->queue_num == RR) {
+          //acquire(&tickslock);
+          p->arrival_time = ticks;
+          //release(&tickslock);
         }
     }
     release(&ptable.lock);
