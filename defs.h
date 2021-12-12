@@ -128,6 +128,8 @@ int             wait(void);
 void            wakeup(void*);
 void            yield(void);
 int 			set_proc_queue(int, int);
+int             set_mhrrn_priority_os(int);
+int             set_mhrrn_priority_pc(int, int);
 // int 			print_processes(void);
 
 // swtch.S

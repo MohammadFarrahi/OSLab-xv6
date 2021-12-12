@@ -103,7 +103,9 @@ extern int sys_unlink(void);
 extern int sys_wait(void);
 extern int sys_write(void);
 extern int sys_uptime(void);
-extern int sys_set_proc_queue(void);  
+extern int sys_set_proc_queue(void);
+extern int sys_set_mhrrn_priority_os(void);
+extern int sys_set_mhrrn_priority_pc(void);
 // extern int sys_print_processes(void);
 
 static int (*syscalls[])(void) = {
@@ -129,6 +131,8 @@ static int (*syscalls[])(void) = {
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
 [SYS_set_proc_queue]  sys_set_proc_queue,
+[SYS_set_mhrrn_priority_os] set_mhrrn_priority_os,
+[SYS_set_mhrrn_priority_pc] set_mhrrn_priority_pc
 // [SYS_print_processes] sys_print_processes,
 };
 

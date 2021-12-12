@@ -101,3 +101,18 @@ sys_set_proc_queue(void)
 
   return set_proc_queue(pid, queue);
 }
+
+int sys_set_mhrrn_priority_os(void){
+  int mhrrn_priority;
+  if(argint(0, &mhrrn_priority) < 0)
+    return -1;
+    
+    return set_mhrrn_priority_os(mhrrn_priority);
+}
+int sys_set_mhrrn_priority_ps(void){
+  int mhrrn_priority, pid;
+  if(argint(0, &pid) < 0 || argint(1, &mhrrn_priority) < 0)
+    return -1;
+    
+    return set_mhrrn_priority_pc(pid, mhrrn_priority);
+}
