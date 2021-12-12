@@ -49,6 +49,13 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
+
+  int mhrrn_priority;      //assigned externally
+  int queue_num;              // Process Queue Number :     1 = RR     2 = LCFS     3 = MAX_MHRRN
+  int cycles;                 // Process Cycles
+  int arrival_time;           // Process Arraval time
+  double mhrrn;               // Process HRRN Ratio
+  int waiting_time;           // Process waited time to be called
 };
 
 // Process memory is laid out contiguously, low addresses first:

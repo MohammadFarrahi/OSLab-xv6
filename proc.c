@@ -38,10 +38,10 @@ struct cpu*
 mycpu(void)
 {
   int apicid, i;
-  
+
   if(readeflags()&FL_IF)
     panic("mycpu called with interrupts enabled\n");
-  
+
   apicid = lapicid();
   // APIC IDs are not guaranteed to be contiguous. Maybe we should have
   // a reverse map, or reserve a register to store &cpus[i].
@@ -124,7 +124,7 @@ userinit(void)
   extern char _binary_initcode_start[], _binary_initcode_size[];
 
   p = allocproc();
-  
+
   initproc = p;
   if((p->pgdir = setupkvm()) == 0)
     panic("userinit: out of memory?");
@@ -275,7 +275,7 @@ wait(void)
   struct proc *p;
   int havekids, pid;
   struct proc *curproc = myproc();
-  
+
   acquire(&ptable.lock);
   for(;;){
     // Scan through table looking for exited children.
@@ -319,13 +319,57 @@ wait(void)
 //  - swtch to start running that process
 //  - eventually that process transfers control
 //      via swtch back to the scheduler.
+/***************************************************************************************************************************************/
+/***************************************************************************************************************************************/
+/***************************************************************************************************************************************/
+/**************************************************************BY MAHDI*****************************************************************/
+/***************************************************************************************************************************************/
+/***************************************************************************************************************************************/
+/***************************************************************************************************************************************/
+/***************************************************************************************************************************************/
+
+
+double calculate_mhrrn(int arrival_time, int executed_cycles_number, int hrrn_priority)
+{
+  int current_time = ticks;
+  int waiting_time = current_time - arrival_time;
+  double hrrn = (waiting_time + executed_cycles_number)*1.0/executed_cycles_number;
+  double mhrrn = (hrrn + hrrn_priority)/2;
+  return mhrrn;
+}
+
+struct proc* get_proc_from_mhrrn_queue(void)
+{
+  struct proc *current_proc;
+  struct proc *proc_with_most_mhrrn = 0;
+  double max_ratio = 0.0;
+
+  for(current_proc = ptable.proc; current_proc < &ptable.proc[NPROC]; ++current_proc)
+  {
+    if(current_proc->state != RUNNABLE || current_proc->queue_num != HRRN)
+      continue;
+
+    double current_ratio = calculate_mhrrn(current_proc->arrival_time, current_proc->cycles, current_proc->mhrrn_priority);
+
+    if (current_ratio > max_ratio)
+    {
+      max_ratio = current_ratio;
+      proc_with_most_mhrrn = current_proc;
+    }
+  }
+  return proc_with_most_mhrrn;
+}
+
+
+
+
 void
 scheduler(void)
 {
   struct proc *p;
   struct cpu *c = mycpu();
   c->proc = 0;
-  
+
   for(;;){
     // Enable interrupts on this processor.
     sti();
@@ -418,7 +462,7 @@ void
 sleep(void *chan, struct spinlock *lk)
 {
   struct proc *p = myproc();
-  
+
   if(p == 0)
     panic("sleep");
 
