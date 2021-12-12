@@ -665,3 +665,21 @@ procdump(void)
     cprintf("\n");
   }
 }
+
+int
+set_proc_queue(int pid, int dest_queue)
+{
+  struct proc *p;
+
+  acquire(&ptable.lock);
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->pid == pid){
+      p->queue_num = dest_queue;
+      p->waiting_time = 0;
+      release(&ptable.lock);
+      return 0;
+    }
+  }
+  release(&ptable.lock);
+  return -1;
+}

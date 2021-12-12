@@ -128,7 +128,7 @@ int             wait(void);
 void            wakeup(void*);
 void            yield(void);
 int 			set_proc_queue(int, int);
-int 			print_processes(void);
+// int 			print_processes(void);
 
 // swtch.S
 void            swtch(struct context**, struct context*);

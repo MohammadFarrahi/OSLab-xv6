@@ -89,3 +89,15 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+int
+sys_set_proc_queue(void)
+{
+  int pid;
+  int queue;
+
+  if(argint(0, &pid) < 0 || argint(1, &queue) < 0)
+    return -1;
+
+  return set_proc_queue(pid, queue);
+}
