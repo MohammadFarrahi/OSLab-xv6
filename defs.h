@@ -13,6 +13,9 @@ struct superblock;
 #define RR 1 //round rubin
 #define LCFS 2
 #define MHRRN 3
+#ifndef NULL 
+#define NULL 0
+#endif
 
 // bio.c
 void            binit(void);
