@@ -129,6 +129,8 @@ void            wakeup(void*);
 void            yield(void);
 int 			set_proc_queue(int, int);
 void 			print_procs(void);
+int             set_mhrrn_priority_os(int);
+int             set_mhrrn_priority_pc(int, int);
 
 // swtch.S
 void            swtch(struct context**, struct context*);

@@ -25,6 +25,8 @@ int sleep(int);
 int uptime(void);
 int set_proc_queue(int, int);
 void print_procs(void);
+void set_mhrrn_priority_os(int);
+void set_mhrrn_priority_pc(int, int);
 
 // ulib.c
 int stat(const char*, struct stat*);

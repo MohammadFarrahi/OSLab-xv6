@@ -4,6 +4,7 @@
 #include "stat.h"
 #include "user.h"
 #include "fcntl.h"
+#include "defs.h"
 
 char *argv[] = { "sh", 0 };
 
@@ -31,6 +32,9 @@ main(void)
       exec("sh", argv);
       printf(1, "init: exec sh failed\n");
       exit();
+    }
+    if(pid > 0){
+      set_proc_queue(pid, RR);
     }
     while((wpid=wait()) >= 0 && wpid != pid)
       printf(1, "zombie!\n");

@@ -818,3 +818,31 @@ print_procs(void)
   }
   release(&ptable.lock);
 }
+int set_mhrrn_priority_os(int parameter)
+{
+  struct proc *p;
+  acquire(&ptable.lock);
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+  {
+    p->mhrrn_priority = parameter;
+  }
+  release(&ptable.lock);
+  return 0;
+}
+
+int set_mhrrn_priority_pc(int process_id, int patameter)
+{
+  struct proc *p;
+  acquire(&ptable.lock);
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+  {
+    if(p->pid == process_id)
+    {
+      p->mhrrn_priority = patameter;
+      release(&ptable.lock);
+      return 0;
+    }
+  }
+  release(&ptable.lock);
+  return -1;
+}
