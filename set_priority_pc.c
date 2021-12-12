@@ -17,5 +17,6 @@ int main(int argc, char* argv[])
         printf(2, "priority of process with %d changed to %d.\n", pid, priority);
     else
         printf(2, "something wrong happend.\ntask failed...\n");
+    exit();
     return 0;
 }

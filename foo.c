@@ -3,7 +3,7 @@
 #include "user.h"
 #include "fcntl.h"
 
-#define NPRCS 10
+#define NPRCS 12
 
 int main(int argc, char const *argv[])
 {
@@ -22,7 +22,7 @@ int main(int argc, char const *argv[])
 	}
 	if(pid == 0) {
 		int z = 1;
-		for(long int j = 0; j < 2000000000; j+=1)
+		for(long int j = 0; j < 2000050000; j+=1)
 			z += (j + 1);
 		printf (2, "", z);
 	}

@@ -338,6 +338,7 @@ check_aging()
 
     if (p->waiting_time > AGING_CYCLE)
     {
+        //cprintf("\npid=%d is aged so it is going to upper queue********\n", p->pid);
         p->queue_num = (p->queue_num == RR) ? RR : p->queue_num-1;
         p->waiting_time = 0;
     }

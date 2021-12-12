@@ -16,5 +16,6 @@ int main(int argc, const char* argv[]){
   else {
     printf(2, "task faild.\n");
   }
+  exit();
   return 0;
 }
