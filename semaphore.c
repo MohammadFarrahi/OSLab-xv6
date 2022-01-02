@@ -7,9 +7,6 @@
 #include "semaphore.h"
 
 
-
-
-
 int
 sem_init(int i, int v)
 {
@@ -24,7 +21,7 @@ sem_release(int i)
 {
   acquire(&(sem[i].lk));
   sem[i].counter++;
-  wakeup(&(sem[i].cv));
+  wakeup_one(&(sem[i].cv));
   release(&(sem[i].lk));
   return 0;
 }

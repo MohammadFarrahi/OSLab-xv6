@@ -119,6 +119,7 @@ void            sleep(void*, struct spinlock*);
 void            userinit(void);
 int             wait(void);
 void            wakeup(void*);
+void            wakeup_one(void*);
 void            yield(void);
 
 // swtch.S
