@@ -1,6 +1,6 @@
 #include "spinlock.h"
 
-#define N_SEM 5
+#define N_SEM 6
 
 int sem_init(int, int);
 int sem_acquire(int);
@@ -13,4 +13,3 @@ struct semaphore
 	int cv;
 };
 
-struct semaphore sem[N_SEM];

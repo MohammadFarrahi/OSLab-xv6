@@ -3,6 +3,8 @@
 #include "defs.h"
 #include "semaphore.h"
 
+struct semaphore sem[N_SEM];
+
 int
 sem_init(int i, int v)
 {

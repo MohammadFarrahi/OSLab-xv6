@@ -25,6 +25,7 @@ int sleep(int);
 int uptime(void);
 void pickup_chopsticks(int);
 void putdown_chopsticks(int);
+int init_semaphores(void);
 
 // ulib.c
 int stat(const char*, struct stat*);
