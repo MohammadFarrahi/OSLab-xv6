@@ -23,8 +23,8 @@ int getpid(void);
 char* sbrk(int);
 int sleep(int);
 int uptime(void);
-void pickup_chopsticks(int);
-void putdown_chopsticks(int);
+int pickup_chopsticks(int);
+int putdown_chopsticks(int);
 int init_semaphores(void);
 
 // ulib.c

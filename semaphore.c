@@ -1,7 +1,13 @@
 #include "types.h"
-#include "x86.h"
+#include "stat.h"
+#include "fs.h"
 #include "defs.h"
+#include "fcntl.h"
+#include "x86.h"
 #include "semaphore.h"
+
+
+
 
 
 int

@@ -103,8 +103,8 @@ extern int sys_unlink(void);
 extern int sys_wait(void);
 extern int sys_write(void);
 extern int sys_uptime(void);
-extern void sys_pickup_chopsticks(void);
-extern void sys_putdown_chopsticks(void);
+extern int sys_pickup_chopsticks(void);
+extern int sys_putdown_chopsticks(void);
 extern int sys_init_semaphores(void);
 
 static int (*syscalls[])(void) = {
