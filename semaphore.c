@@ -8,7 +8,7 @@ sem_init(int i, int v)
 {
   sem[i].counter = v;
   sem[i].cv = 0;
-  initlock(&(sem[i].lk), "abc");
+  initlock(&(sem[i].lk), "SEM_LOCK");
   return 0;
 }
 
