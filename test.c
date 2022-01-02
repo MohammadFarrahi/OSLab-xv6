@@ -8,10 +8,8 @@ int main(){
     
     int pid = 0;
     init_semaphores();
-    
+    char temp[20];
     int phil_pides[5];
-    char* argv[2];
-    strcpy(argv[0], "philosopher");
     for(int i = 0; i < 5; i++){
         pid = fork();
         if(pid > 0){ 
@@ -19,7 +17,8 @@ int main(){
             continue;
         }
         else if (pid == 0) {
-            itoa(i, argv[1], 10);
+            itoa(i, temp, 10);
+            char* argv[] = {"philosopher", temp};
             exec(argv[0], argv);
         }
         else { printf(1, "Bat thing happend!"); exit(); }

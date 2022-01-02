@@ -7,7 +7,7 @@
 #define LEFT (phil_num + 4) % N
 #define RIGHT (phil_num + 1) % N
 
-int phil_state[N];
+int phil_state[N] = { THINKING,THINKING,THINKING,THINKING,THINKING };
 struct semaphore mutex;
 
 
