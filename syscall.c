@@ -103,6 +103,8 @@ extern int sys_unlink(void);
 extern int sys_wait(void);
 extern int sys_write(void);
 extern int sys_uptime(void);
+extern void sys_pickup_chopsticks(void);
+extern void sys_putdown_chopsticks(void);
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -126,6 +128,8 @@ static int (*syscalls[])(void) = {
 [SYS_link]    sys_link,
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
+[SYS_pickup_chopsticks] sys_pickup_chopsticks,
+[SYS_putdown_chopsticks] sys_putdown_chopsticks
 };
 
 void

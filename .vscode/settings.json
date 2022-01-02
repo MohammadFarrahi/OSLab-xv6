@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "proc.h": "c",
+        "defs.h": "c",
+        "types.h": "c",
+        "x86.h": "c",
+        "date.h": "c",
+        "param.h": "c",
+        "memlayout.h": "c",
+        "mmu.h": "c"
+    }
+}

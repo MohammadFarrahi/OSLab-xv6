@@ -20,3 +20,5 @@
 #define SYS_link   19
 #define SYS_mkdir  20
 #define SYS_close  21
+#define SYS_pickup_chopsticks 22
+#define SYS_putdown_chopsticks 23
