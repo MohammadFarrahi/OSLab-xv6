@@ -23,6 +23,8 @@ int getpid(void);
 char* sbrk(int);
 int sleep(int);
 int uptime(void);
+void pickup_chopsticks(int);
+void putdown_chopsticks(int);
 
 // ulib.c
 int stat(const char*, struct stat*);
