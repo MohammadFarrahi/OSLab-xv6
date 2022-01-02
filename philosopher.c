@@ -12,7 +12,7 @@ int main(int argc, char *argv[]){
         sleep(1); // thinking
         pickup_chopsticks(phil_num);
         sleep(1); // eating
-        putdown_chopsticks(phil_num);   
+        putdown_chopsticks(phil_num);  
     }
     exit();
 }
