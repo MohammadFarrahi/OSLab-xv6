@@ -12,4 +12,4 @@ struct semaphore
 	struct spinlock lk;
 	int cv;
 };
-
+struct semaphore sem[N_SEM];
