@@ -6,6 +6,14 @@ int phil_state[N];
 struct semaphore mutex;
 
 
+void sys_init_semaphores(void)
+{
+  sem_init(MUTEX, 1);
+
+  for (int i = 0; i < N-1; i++)
+    sem_init(i, 0);
+}
+
 void sys_pickup_chopsticks(void)
 {
     int phil_num;
