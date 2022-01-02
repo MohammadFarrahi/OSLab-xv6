@@ -24,7 +24,7 @@ int main(){
         else { printf(1, "Bat thing happend!"); exit(); }
 
     }
-    sleep(3000);
+    sleep(50);
     for(int i = 0; i < 5; i++){
         kill(phil_pides[i]);
     }

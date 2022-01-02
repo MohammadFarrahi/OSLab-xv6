@@ -4,8 +4,8 @@
 #include "fs.h"
 #include "fcntl.h"
 #include "dining_philosophers.h"
-#define LEFT (phil_num + 4) % N
-#define RIGHT (phil_num + 1) % N
+#define LEFT (phil_num + 4) % (N-1)
+#define RIGHT (phil_num + 1) % (N-1)
 
 int phil_state[N] = { THINKING,THINKING,THINKING,THINKING,THINKING };
 struct semaphore mutex;
@@ -28,7 +28,7 @@ void try_picking(int phil_num)
  
         // sleep(2);
  
-        cprintf("Philosopher %d takes fork %d and %d\n",
+        cprintf("Philosopher %d picks chopstick %d and %d\n",
                       phil_num + 1, LEFT + 1, phil_num + 1);
  
         cprintf("Philosopher %d is Eating\n", phil_num + 1);
@@ -72,7 +72,7 @@ int sys_putdown_chopsticks(void)
 
   phil_state[phil_num] = THINKING;
 
-  cprintf("Philosopher %d putting fork %d and %d down\n",
+  cprintf("Philosopher %d putting chopstick %d and %d down\n",
           phil_num + 1, LEFT + 1, phil_num + 1);
   cprintf("Philosopher %d is thinking\n", phil_num + 1);
 

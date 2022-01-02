@@ -21,7 +21,7 @@ sem_release(int i)
 {
   acquire(&(sem[i].lk));
   sem[i].counter++;
-  wakeup_one(&(sem[i].cv));
+  wakeup(&(sem[i].cv));
   release(&(sem[i].lk));
   return 0;
 }

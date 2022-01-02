@@ -473,26 +473,6 @@ wakeup(void *chan)
   release(&ptable.lock);
 }
 
-static void
-wakeup2(void *chan)
-{
-  struct proc *p;
-
-  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
-    if(p->state == SLEEPING && p->chan == chan)
-      {
-        p->state = RUNNABLE;
-        break;
-      }
-}
-
-void 
-wakeup_one (void* chan)
-{
-  acquire(&ptable.lock);
-  wakeup2(chan);
-  release(&ptable.lock);
-}
 
 // Kill the process with the given pid.
 // Process won't exit until it returns
