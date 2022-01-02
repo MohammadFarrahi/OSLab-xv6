@@ -4,33 +4,33 @@
 #include "semaphore.h"
 
 int
-sem_init(int index, int val)
+sem_init(int i, int v)
 {
-  sem[index].counter = val;
-  sem[index].cv = 0;
-  initlock(&(sem[index].lk), "abc");
+  sem[i].counter = v;
+  sem[i].cv = 0;
+  initlock(&(sem[i].lk), "abc");
   return 0;
 }
 
 int
-sem_release(int index)
+sem_release(int i)
 {
-  acquire(&(sem[index].lk));
-  sem[index].counter++;
-  wakeup(&(sem[index].cv));
-  release(&(sem[index].lk));
+  acquire(&(sem[i].lk));
+  sem[i].counter++;
+  wakeup(&(sem[i].cv));
+  release(&(sem[i].lk));
   return 0;
 }
 
 int
-sem_acquire(int index)
+sem_acquire(int i)
 {
-  acquire(&(sem[index].lk));
-  sem[index].counter--;
+  acquire(&(sem[i].lk));
+  sem[i].counter--;
 
-  if (sem[index].counter < 0)
-  	sleep(&(sem[index].cv), &(sem[index].lk));
+  if (sem[i].counter < 0)
+  	sleep(&(sem[i].cv), &(sem[i].lk));
 
-  release(&(sem[index].lk));
+  release(&(sem[i].lk));
   return 0;
 }
