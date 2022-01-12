@@ -248,6 +248,14 @@ exit(void)
       curproc->ofile[fd] = 0;
     }
   }
+  for (int i = 0; i < MPFILE; i++)
+  {
+    if (curproc->mp_files[i].check)
+    {
+      fileclose(curproc->ofile[curproc->mp_files[i].fd]);
+    }
+  }
+
 
   begin_op();
   iput(curproc->cwd);

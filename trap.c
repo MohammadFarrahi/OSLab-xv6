@@ -46,11 +46,10 @@ int page_fault_handler(void)
   if (i == MPFILE){ return 0; }
   
   pnum = (addr - p->mp_files[i].start_addr) / PGSIZE;
-  uint vaddr_start = p->mp_files[i].start_addr + pnum*PGSIZE;
   char *mem = kalloc();
   memset(mem, 0, PGSIZE);
 
-  if(mappages(p->pgdir, (char*)(vaddr_start), PGSIZE, V2P(mem), PTE_U) < 0){
+  if(mappages(p->pgdir, (char*)(p->mp_files[i].start_addr + pnum*PGSIZE), PGSIZE, V2P(mem), PTE_W|PTE_U) < 0){
     cprintf("page mapping failed!\n");
     kfree(mem);
     return 0;
@@ -61,13 +60,13 @@ int page_fault_handler(void)
     return 0;
   }
 
-  if (mmap_read(p->ofile[p->mp_files[i].fd], (char*)(vaddr_start), pnum*PGSIZE, PGSIZE) < 0){
+  if (mmap_read(p->ofile[p->mp_files[i].fd], (char*)(p->mp_files[i].start_addr + pnum*PGSIZE), pnum*PGSIZE, PGSIZE) < 0){
     cprintf("reading from file failed\n");
   }
 
-  // cprintf("addr: %x\n", addr);
   return 1;
 }
+
 
 
 //PAGEBREAK: 41
