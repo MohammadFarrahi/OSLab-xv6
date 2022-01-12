@@ -100,8 +100,8 @@ exec(char *path, char **argv)
   curproc->tf->eip = elf.entry;  // main
   curproc->tf->esp = sp;
   for (int i = 0; i < MPFILE; i++)
-    p->mp_files[i].check = 0;
-  p->to_map_addr = MMAPBASE;
+    curproc->mp_files[i].check = 0;
+  curproc->to_map_addr = MMAPBASE;
   switchuvm(curproc);
   freevm(oldpgdir);
   return 0;
