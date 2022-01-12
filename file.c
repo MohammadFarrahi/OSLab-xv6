@@ -112,7 +112,7 @@ fileread(struct file *f, char *addr, int n)
   panic("fileread");
 }
 
-int mmap_read(struct file* f, char* addr, uint off,uint length){
+int mmap_read(struct file* f, char* addr, uint off, uint length) {
   int status = 0;
   ilock(f->ip);  
   if (readi(f->ip, addr, off, length) < 0){

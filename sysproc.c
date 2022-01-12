@@ -90,10 +90,3 @@ sys_uptime(void)
   return xticks;
 }
 
-
-int
-sys_get_free_pages_count()
-{
-  return get_free_pages_count();
-}
-

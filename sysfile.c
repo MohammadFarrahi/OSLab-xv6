@@ -455,7 +455,7 @@ int sys_mmap(void)
 
   if (curr_proc->ofile[fd] == 0)
   {
-    cprintf("file is not opened.\n");
+    cprintf("Opening file failed!\n");
     return 0; 
   }
 
@@ -476,5 +476,12 @@ int sys_mmap(void)
   }
   
   return curr_proc->mp_files[i].start_addr;
+}
+
+
+int
+sys_get_free_pages_count()
+{
+  return get_free_pages_count();
 }
 

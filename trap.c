@@ -37,7 +37,7 @@ int page_fault_handler(void)
 {
   struct proc *p = myproc();
   uint addr = rcr2();
-  // uint newIndex = 0;
+  uint pnum = 0;
   int i = 0;
   for (i = 0; i < MPFILE; i++) {
     if ( (p->mp_files[i].check) && (addr >= p->mp_files[i].start_addr) && (addr < (p->mp_files[i].start_addr + p->mp_files[i].length)) ){ break; }
@@ -45,11 +45,12 @@ int page_fault_handler(void)
 
   if (i == MPFILE){ return 0; }
   
-  // newIndex = (addr - p->mp_files[i].start_addr) / PGSIZE;
+  pnum = (addr - p->mp_files[i].start_addr) / PGSIZE;
+  uint vaddr_start = p->mp_files[i].start_addr + pnum*PGSIZE;
   char *mem = kalloc();
   memset(mem, 0, PGSIZE);
 
-  if(mappages(p->pgdir, (char*)(addr), PGSIZE, V2P(mem), PTE_U) < 0){
+  if(mappages(p->pgdir, (char*)(vaddr_start), PGSIZE, V2P(mem), PTE_U) < 0){
     cprintf("page mapping failed!\n");
     kfree(mem);
     return 0;
@@ -60,7 +61,7 @@ int page_fault_handler(void)
     return 0;
   }
 
-  if (mmap_read(p->ofile[p->mp_files[i].fd], (char*)(addr), addr - p->mp_files[i].start_addr, PGSIZE) < 0){
+  if (mmap_read(p->ofile[p->mp_files[i].fd], (char*)(vaddr_start), pnum*PGSIZE, PGSIZE) < 0){
     cprintf("reading from file failed\n");
   }
 

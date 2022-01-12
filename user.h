@@ -24,6 +24,7 @@ char* sbrk(int);
 int sleep(int);
 int uptime(void);
 int get_free_pages_count(void);
+void* mmap(void* addr, uint length, int prot, int flags, int fd, int offset);
 
 // ulib.c
 int stat(const char*, struct stat*);

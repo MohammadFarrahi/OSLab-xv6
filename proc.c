@@ -128,6 +128,10 @@ userinit(void)
   initproc = p;
   if((p->pgdir = setupkvm()) == 0)
     panic("userinit: out of memory?");
+  for (int i = 0; i < MPFILE; i++)
+    p->mp_files[i].check = 0;
+  p->to_map_addr = MMAPBASE;
+
   inituvm(p->pgdir, _binary_initcode_start, (int)_binary_initcode_size);
   p->sz = PGSIZE;
   memset(p->tf, 0, sizeof(*p->tf));
@@ -199,6 +203,9 @@ fork(void)
   np->sz = curproc->sz;
   np->parent = curproc;
   *np->tf = *curproc->tf;
+  for (int i = 0; i < MPFILE; i++)
+    np->mp_files[i] = curproc->mp_files[i];
+  np->to_map_addr = curproc->to_map_addr;
 
   // Clear %eax so that fork returns 0 in the child.
   np->tf->eax = 0;
