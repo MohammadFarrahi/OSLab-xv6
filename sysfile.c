@@ -442,3 +442,39 @@ sys_pipe(void)
   fd[1] = fd1;
   return 0;
 }
+
+int sys_mmap(void)
+{
+  struct proc* curr_proc = myproc();
+
+  int fd;
+  int len;
+
+  if(argint(1, &len) < 0 || argint(4, &fd) < 0)
+    return -1;
+
+  if (curr_proc->ofile[fd] == 0)
+  {
+    cprintf("file is not opened.\n");
+    return 0; 
+  }
+
+  int i = 0;
+  for (i = 0; i < MPFILE; i++) {
+    if (curr_proc->mp_files[i].check == 0) {
+      curr_proc->mp_files[i].check = 1;
+      curr_proc->mp_files[i].length = len;
+      curr_proc->mp_files[i].start_addr = curr_proc->to_map_addr;
+      curr_proc->to_map_addr += (len + PGSIZE - len % PGSIZE);
+      fd=fdalloc(curr_proc->ofile[fd]);
+      if(fd < 0)
+        return -1;
+      filedup(curr_proc->ofile[fd]);
+      curr_proc->mp_files[i].fd = fd;
+      break;
+    }  
+  }
+  
+  return curr_proc->mp_files[i].start_addr;
+}
+

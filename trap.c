@@ -32,6 +32,43 @@ idtinit(void)
   lidt(idt, sizeof(idt));
 }
 
+
+int page_fault_handler(void)
+{
+  struct proc *p = myproc();
+  uint addr = rcr2();
+  // uint newIndex = 0;
+  int i = 0;
+  for (i = 0; i < MPFILE; i++) {
+    if ( (p->mp_files[i].check) && (addr >= p->mp_files[i].start_addr) && (addr < (p->mp_files[i].start_addr + p->mp_files[i].length)) ){ break; }
+  }
+
+  if (i == MPFILE){ return 0; }
+  
+  // newIndex = (addr - p->mp_files[i].start_addr) / PGSIZE;
+  char *mem = kalloc();
+  memset(mem, 0, PGSIZE);
+
+  if(mappages(p->pgdir, (char*)(addr), PGSIZE, V2P(mem), PTE_U) < 0){
+    cprintf("page mapping failed!\n");
+    kfree(mem);
+    return 0;
+  }
+  
+  if (p->ofile[p->mp_files[i].fd] == 0){
+    cprintf("opening file failed!\n");
+    return 0;
+  }
+
+  if (mmap_read(p->ofile[p->mp_files[i].fd], (char*)(addr), addr - p->mp_files[i].start_addr, PGSIZE) < 0){
+    cprintf("reading from file failed\n");
+  }
+
+  // cprintf("addr: %x\n", addr);
+  return 1;
+}
+
+
 //PAGEBREAK: 41
 void
 trap(struct trapframe *tf)
@@ -77,6 +114,10 @@ trap(struct trapframe *tf)
             cpuid(), tf->cs, tf->eip);
     lapiceoi();
     break;
+    case T_PGFLT:
+    if (page_fault_handler()){
+      break;
+    }
 
   //PAGEBREAK: 13
   default:
