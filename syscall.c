@@ -104,6 +104,7 @@ extern int sys_wait(void);
 extern int sys_write(void);
 extern int sys_uptime(void);
 extern int sys_get_free_pages_count(void);
+extern int sys_mmap(void);
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -128,6 +129,7 @@ static int (*syscalls[])(void) = {
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
 [SYS_get_free_pages_count]  sys_get_free_pages_count,
+[SYS_mmap]    sys_mmap,
 };
 
 void
